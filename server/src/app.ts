@@ -3,8 +3,13 @@ import express from "express";
 import { env } from "../config/env";
 import session from "express-session";
 import { router } from "./routes";
+import { join } from "path";
 
 const PORT = env.get("PORT");
+const clientPath = join(
+    __dirname,
+    `../../client/${env.get("NODE_ENV") === "production" ? "build" : "public"}`
+);
 export const app = express();
 
 app.use(express.json());
@@ -14,18 +19,17 @@ app.use(
         resave: false,
         saveUninitialized: false,
         cookie: {
-            maxAge: 1000 * 60 * 60 * 24,
+            maxAge: 1000 * 60 * 60 * 24, // 24 hours
             httpOnly: true,
             secure: false,
         },
     })
 );
 app.use("/api/v1", router);
+app.use(express.static(clientPath));
 
-// app.use(express.static(path.join(__dirname, 'ui')));
-
-// app.get('/*', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'ui/index.html'));
-// });
+app.get("/*", (req, res) => {
+    res.sendFile(join(`${clientPath}/index.html`));
+});
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
