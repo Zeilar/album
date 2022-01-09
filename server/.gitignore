@@ -1,0 +1,5 @@
+node_modules
+/dist
+.env
+config/env/development.json
+config/env/production.json

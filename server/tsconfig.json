@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "strictPropertyInitialization": false,
+        "strict": true,
+        "module": "commonjs",
+        "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
+        "target": "es2017",
+        "outDir": "./dist",
+        "incremental": true,
+        "jsx": "preserve",
+        "esModuleInterop": true
+    },
+}
