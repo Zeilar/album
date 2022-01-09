@@ -18,6 +18,7 @@ export class AuthController {
                 email,
                 password
             );
+            req.session.userId = user.uid;
             await addDoc(collection(db, "users"), { uid: user.uid });
         } catch (error) {
             return res.sendStatus(500);
@@ -35,6 +36,11 @@ export class AuthController {
         } catch (error) {
             return res.sendStatus(401);
         }
+        res.sendStatus(200);
+    }
+
+    public static logout(req: Request, res: Response) {
+        req.session.userId = null;
         res.sendStatus(200);
     }
 }

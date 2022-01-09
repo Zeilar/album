@@ -2,6 +2,11 @@ import convict from "convict";
 import { join } from "path";
 
 export const env = convict({
+    SESSION_SECRET: {
+        format: String,
+        default: "",
+        env: "SESSION_SECRET",
+    },
     NODE_ENV: {
         doc: "The application environment.",
         format: ["production", "development", "test"],
