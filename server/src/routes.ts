@@ -1,7 +1,9 @@
-import { app } from "./app";
+import { Router } from "express";
 import { AuthController } from "./controllers/auth";
+import { authenticated } from "./middlewares/authenticated";
+export const router = Router();
 
-const BASE_URL = "/api/v1";
-
-app.post(`${BASE_URL}/auth/register`, AuthController.register);
-app.post(`${BASE_URL}/auth/login`, AuthController.login);
+router.post("/auth/register", AuthController.register);
+router.post("/auth/login", AuthController.login);
+router.get("/auth/logout", AuthController.logout);
+router.get("/auth/whoami", authenticated, AuthController.whoami);

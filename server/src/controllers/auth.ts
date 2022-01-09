@@ -3,10 +3,19 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
 } from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { auth, db } from "../../config/firebase";
 
 export class AuthController {
+    public static async whoami(req: Request, res: Response) {
+        const q = query(
+            collection(db, "users"),
+            where("uid", "==", req.session.userId)
+        );
+        const users = await getDocs(q);
+        res.json(users.docs[0].data());
+    }
+
     public static async register(req: Request, res: Response) {
         const { email, password } = req.body;
         if (!email || !password) {
@@ -19,7 +28,10 @@ export class AuthController {
                 password
             );
             req.session.userId = user.uid;
-            await addDoc(collection(db, "users"), { uid: user.uid });
+            await addDoc(collection(db, "users"), {
+                uid: user.uid,
+                email: user.email,
+            });
         } catch (error) {
             return res.sendStatus(500);
         }
@@ -32,8 +44,14 @@ export class AuthController {
             return res.sendStatus(400);
         }
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            const { user } = await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+            req.session.userId = user.uid;
         } catch (error) {
+            console.error(error);
             return res.sendStatus(401);
         }
         res.sendStatus(200);
