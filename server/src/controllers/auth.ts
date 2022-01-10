@@ -7,13 +7,21 @@ import { addDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { auth, db } from "../../config/firebase";
 
 export class AuthController {
-    public static async whoami(req: Request, res: Response) {
+    public static async whoami(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
         const q = query(
             collection(db, "users"),
             where("uid", "==", req.session.userId)
         );
-        const users = await getDocs(q);
-        res.json(users.docs[0].data());
+        try {
+            const users = await getDocs(q);
+            res.json(users.docs[0].data());
+        } catch (error) {
+            next(error);
+        }
     }
 
     public static async register(
