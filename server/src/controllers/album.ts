@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../../config/firebase";
 import { v4 as uuidv4 } from "uuid";
 
@@ -27,8 +27,13 @@ export class AlbumController {
                     );
                 })
             );
+            const photoUrls = await Promise.all(
+                photos.map((photo) => getDownloadURL(photo.ref))
+            );
             await addDoc(collection(db, "albums"), {
-                photos: photos.map((photo) => ({ ref: photo.metadata.name })),
+                photos: photos.map((_, i) => ({
+                    url: photoUrls[i],
+                })),
                 title: req.body.title,
                 rated: false,
                 owner: req.session.userId,
@@ -67,7 +72,11 @@ export class AlbumController {
         }
     }
 
-    public static async get() {
+    public static async getById(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
         //
     }
 }

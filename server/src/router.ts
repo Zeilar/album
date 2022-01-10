@@ -16,6 +16,7 @@ router.get("/auth/whoami", authenticated, AuthController.whoami);
 
 // Album
 router.get("/albums/rated", authenticated, AlbumController.getRated);
+router.get("/albums/:id", AlbumController.getById);
 router.post(
     "/albums",
     authenticated,
