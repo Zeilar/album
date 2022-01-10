@@ -1,9 +1,10 @@
 import "../config/firebase";
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { env } from "../config/env";
 import session from "express-session";
-import { router } from "./routes";
+import { router } from "./router";
 import { join } from "path";
+import multer from "multer";
 
 const PORT = env.get("PORT");
 const clientPath = join(
@@ -27,6 +28,10 @@ app.use(
 );
 app.use("/api/v1", router);
 app.use(express.static(clientPath));
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error(error.stack);
+    res.status(500).send("Something broke!");
+});
 
 app.get("/*", (req, res) => {
     res.sendFile(join(`${clientPath}/index.html`));
