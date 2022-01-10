@@ -1,12 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { addDoc, collection } from "firebase/firestore";
 import { ref, uploadBytes } from "firebase/storage";
-import { rm } from "fs/promises";
-import { join } from "path";
 import { db, storage } from "../../config/firebase";
 import { v4 as uuidv4 } from "uuid";
-
-const uploadPath = join(__dirname, "../../data");
 
 export class AlbumController {
     public static async create(
