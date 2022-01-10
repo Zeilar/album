@@ -4,7 +4,6 @@ import { env } from "../config/env";
 import session from "express-session";
 import { router } from "./router";
 import { join } from "path";
-import multer from "multer";
 
 const PORT = env.get("PORT");
 const clientPath = join(

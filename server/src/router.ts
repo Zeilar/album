@@ -4,7 +4,7 @@ import { AlbumController } from "./controllers/album";
 import { AuthController } from "./controllers/auth";
 import { authenticated } from "./middlewares/authenticated";
 
-const upload = multer({ dest: "./data" });
+const upload = multer({ dest: "./data", storage: multer.memoryStorage() });
 
 export const router = Router();
 
@@ -16,3 +16,4 @@ router.get("/auth/whoami", authenticated, AuthController.whoami);
 
 // Album
 router.post("/album", upload.array("photos", 10), AlbumController.create);
+router.put("/album/:id", upload.array("photos", 10), AlbumController.addPhotos);
