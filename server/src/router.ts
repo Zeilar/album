@@ -15,5 +15,5 @@ router.get("/auth/logout", AuthController.logout);
 router.get("/auth/whoami", authenticated, AuthController.whoami);
 
 // Album
-router.post("/album", upload.array("photos", 10), AlbumController.create);
-router.put("/album/:id", upload.array("photos", 10), AlbumController.addPhotos);
+router.post("/album", upload.array("photos"), AlbumController.create);
+router.put("/album/:id", upload.array("photos"), AlbumController.addPhotos);
