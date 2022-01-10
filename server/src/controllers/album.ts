@@ -28,11 +28,9 @@ export class AlbumController {
                 })
             );
             await addDoc(collection(db, "albums"), {
-                photos: photos.map((photo) => ({
-                    ref: photo.metadata.name,
-                    approved: false,
-                })),
+                photos: photos.map((photo) => ({ ref: photo.metadata.name })),
                 title: req.body.title,
+                rated: false,
             });
             res.sendStatus(200);
         } catch (error) {
