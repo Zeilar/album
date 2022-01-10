@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -16,7 +16,11 @@ export class AuthController {
         res.json(users.docs[0].data());
     }
 
-    public static async register(req: Request, res: Response) {
+    public static async register(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
         const { email, password } = req.body;
         if (!email || !password) {
             return res.sendStatus(400);
@@ -32,10 +36,10 @@ export class AuthController {
                 uid: user.uid,
                 email: user.email,
             });
+            res.sendStatus(200);
         } catch (error) {
-            return res.sendStatus(500);
+            next(error);
         }
-        res.sendStatus(200);
     }
 
     public static async login(req: Request, res: Response) {
@@ -50,11 +54,10 @@ export class AuthController {
                 password
             );
             req.session.userId = user.uid;
+            res.sendStatus(200);
         } catch (error) {
-            console.error(error);
-            return res.sendStatus(401);
+            res.sendStatus(401);
         }
-        res.sendStatus(200);
     }
 
     public static logout(req: Request, res: Response) {
