@@ -30,7 +30,7 @@ app.use("/api/v1", router);
 app.use(express.static(clientPath));
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
     console.error(error.stack);
-    res.status(500).send("Something broke!");
+    res.status(500).send("Something went wrong!");
 });
 
 app.get("/*", (req, res) => {
