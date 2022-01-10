@@ -31,9 +31,7 @@ export class AlbumController {
                 photos.map((photo) => getDownloadURL(photo.ref))
             );
             await addDoc(collection(db, "albums"), {
-                photos: photos.map((_, i) => ({
-                    url: photoUrls[i],
-                })),
+                photos: photos.map((_, i) => ({ url: photoUrls[i] })),
                 title: req.body.title,
                 rated: false,
                 owner: req.session.userId,
