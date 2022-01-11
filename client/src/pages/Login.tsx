@@ -6,24 +6,34 @@ import {
     Input,
     Stack,
     Text,
+    useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import useAuth from "../hooks/useAuth";
 
 export default function Login() {
     const [email, setEmail] = useState<string | null>(null);
+    const [submitting, setSubmitting] = useState(false);
     const [password, setPassword] = useState<string | null>(null);
+    const toast = useToast();
     const { login } = useAuth();
 
     const emailError = email === "";
     const passwordError = password === "";
 
-    function submit(e: React.FormEvent) {
+    async function submit(e: React.FormEvent) {
         e.preventDefault();
         if (!email || !password) {
             return;
         }
-        login(email, password);
+        setSubmitting(true);
+        const { ok } = await login(email, password);
+        setSubmitting(false);
+        toast({
+            position: "top",
+            title: ok ? "Login successful" : "Login failed",
+            status: ok ? "success" : "error",
+        });
     }
 
     return (
@@ -53,7 +63,12 @@ export default function Login() {
                     <FormErrorMessage>Password is required.</FormErrorMessage>
                 )}
             </FormControl>
-            <Button colorScheme="blue" type="submit" w="fit-content">
+            <Button
+                colorScheme="blue"
+                type="submit"
+                w="fit-content"
+                isLoading={submitting}
+            >
                 Login
             </Button>
         </Stack>

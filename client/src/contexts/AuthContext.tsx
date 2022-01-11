@@ -1,11 +1,11 @@
 import { createContext, useEffect, useState } from "react";
-import { ApiService } from "../services/ApiService";
+import { ApiService, Response } from "../services/ApiService";
 
 type Authenticated = boolean | null;
 
 interface IAuthContext {
     authenticated: Authenticated;
-    login(email: string, password: string): Promise<void>;
+    login(email: string, password: string): Promise<Response<any>>;
 }
 
 interface AuthProps {
@@ -18,7 +18,7 @@ export function AuthContextProvider({ children }: AuthProps) {
     const [authenticated, setAuthenticated] = useState<Authenticated>(null);
 
     async function login(email: string, password: string) {
-        await ApiService.fetch(
+        return await ApiService.fetch(
             "/auth/login",
             { method: "POST" },
             { email, password }
