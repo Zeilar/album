@@ -1,7 +1,10 @@
 import { createContext, useEffect, useState } from "react";
 import { ApiService } from "../services/ApiService";
 
+type Authenticated = boolean | null;
+
 interface IAuthContext {
+    authenticated: Authenticated;
     login(email: string, password: string): Promise<void>;
 }
 
@@ -12,7 +15,7 @@ interface AuthProps {
 export const AuthContext = createContext({} as IAuthContext);
 
 export function AuthContextProvider({ children }: AuthProps) {
-    const [authenticated, setAuthenticated] = useState<Object | null>(null);
+    const [authenticated, setAuthenticated] = useState<Authenticated>(null);
 
     async function login(email: string, password: string) {
         await ApiService.fetch(
@@ -27,8 +30,6 @@ export function AuthContextProvider({ children }: AuthProps) {
         setAuthenticated(status === 200);
     }
 
-    console.log(authenticated);
-
     useEffect(() => {
         (async () => {
             await whoami();
@@ -37,6 +38,7 @@ export function AuthContextProvider({ children }: AuthProps) {
 
     const values: IAuthContext = {
         login,
+        authenticated,
     };
 
     return (
