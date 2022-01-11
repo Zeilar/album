@@ -3,6 +3,7 @@ import {
     addDoc,
     collection,
     doc,
+    getDoc,
     getDocs,
     query,
     updateDoc,
@@ -111,5 +112,26 @@ export class AlbumController {
         next: NextFunction
     ) {
         //
+    }
+
+    public static async rateAlbum(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const album = await getDoc(doc(db, "albums", req.params.id));
+            if (!album.exists()) {
+                return res.sendStatus(404);
+            }
+            await addDoc(collection(db, "albums"), {
+                title: album.data().title,
+                photos: req.body.photos,
+                rated: true,
+            });
+            res.sendStatus(200);
+        } catch (error) {
+            next(error);
+        }
     }
 }

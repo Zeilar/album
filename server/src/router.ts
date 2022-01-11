@@ -29,3 +29,4 @@ router.put(
     upload.array("photos"),
     AlbumController.updateAlbum
 );
+router.post("/albums/:id/rate", AlbumController.rateAlbum);
