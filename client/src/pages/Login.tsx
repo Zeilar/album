@@ -8,16 +8,26 @@ import {
     Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import useAuth from "../hooks/useAuth";
 
 export default function Login() {
     const [email, setEmail] = useState<string | null>(null);
     const [password, setPassword] = useState<string | null>(null);
+    const { login } = useAuth();
 
     const emailError = email === "";
     const passwordError = password === "";
 
+    function submit(e: React.FormEvent) {
+        e.preventDefault();
+        if (!email || !password) {
+            return;
+        }
+        login(email, password);
+    }
+
     return (
-        <Stack spacing={4} maxW="50rem" m="auto" as="form" onSubmit={undefined}>
+        <Stack spacing={4} maxW="50rem" m="auto" as="form" onSubmit={submit}>
             <Text fontSize="1.5rem">Login</Text>
             <FormControl isInvalid={emailError}>
                 <FormLabel htmlFor="email">Email</FormLabel>

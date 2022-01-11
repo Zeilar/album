@@ -31,9 +31,7 @@ export function AuthContextProvider({ children }: AuthProps) {
     }
 
     useEffect(() => {
-        (async () => {
-            await whoami();
-        })();
+        whoami();
     }, []);
 
     const values: IAuthContext = {
