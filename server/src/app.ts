@@ -4,14 +4,19 @@ import { env } from "../config/env";
 import session from "express-session";
 import { router } from "./router";
 import { join } from "path";
+import cors from "cors";
 
 const PORT = env.get("PORT");
-const clientPath = join(
-    __dirname,
-    `../../client/${env.get("NODE_ENV") === "production" ? "build" : "public"}`
-);
+const dev = env.get("NODE_ENV") === "development";
+const clientPath = join(__dirname, `../../client/${dev ? "public" : "build"}`);
 export const app = express();
 
+app.use(
+    cors({
+        origin: dev ? "http://localhost:3000" : `http://localhost:${PORT}`,
+        credentials: true,
+    })
+);
 app.use(express.json());
 app.use(
     session({
@@ -25,6 +30,10 @@ app.use(
         },
     })
 );
+app.use((req, res, next) => {
+    console.log(req.session.userId);
+    next();
+});
 app.use("/api/v1", router);
 app.use(express.static(clientPath));
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
