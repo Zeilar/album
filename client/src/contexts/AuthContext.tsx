@@ -6,6 +6,7 @@ type Authenticated = boolean | null;
 interface IAuthContext {
     authenticated: Authenticated;
     login(email: string, password: string): Promise<Response<any>>;
+    register(email: string, password: string): Promise<Response<any>>;
 }
 
 interface AuthProps {
@@ -25,6 +26,14 @@ export function AuthContextProvider({ children }: AuthProps) {
         );
     }
 
+    async function register(email: string, password: string) {
+        return await ApiService.fetch(
+            "/auth/register",
+            { method: "POST" },
+            { email, password }
+        );
+    }
+
     async function whoami() {
         const { status } = await ApiService.fetch("/auth/whoami");
         setAuthenticated(status === 200);
@@ -35,8 +44,9 @@ export function AuthContextProvider({ children }: AuthProps) {
     }, []);
 
     const values: IAuthContext = {
-        login,
         authenticated,
+        login,
+        register,
     };
 
     return (
