@@ -30,10 +30,6 @@ app.use(
         },
     })
 );
-app.use((req, res, next) => {
-    console.log(req.session.userId);
-    next();
-});
 app.use("/api/v1", router);
 app.use(express.static(clientPath));
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
