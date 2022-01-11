@@ -124,8 +124,10 @@ export class AlbumController {
             if (!album.exists()) {
                 return res.sendStatus(404);
             }
+            const data = album.data();
             await addDoc(collection(db, "albums"), {
-                title: album.data().title,
+                owner: data.owner,
+                title: data.title,
                 photos: req.body.photos,
                 rated: true,
             });
