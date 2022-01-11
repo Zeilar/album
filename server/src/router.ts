@@ -27,5 +27,5 @@ router.put(
     "/albums/:id",
     authenticated,
     upload.array("photos"),
-    AlbumController.addPhotos
+    AlbumController.updateAlbum
 );

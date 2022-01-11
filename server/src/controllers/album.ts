@@ -1,10 +1,42 @@
 import { NextFunction, Request, Response } from "express";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+    addDoc,
+    collection,
+    doc,
+    getDocs,
+    query,
+    updateDoc,
+    where,
+} from "firebase/firestore";
+import {
+    ref,
+    uploadBytes,
+    getDownloadURL,
+    UploadResult,
+} from "firebase/storage";
 import { db, storage } from "../../config/firebase";
 import { v4 as uuidv4 } from "uuid";
 
 export class AlbumController {
+    private static async uploadPhotos(photos: Express.Multer.File[]) {
+        return await Promise.all(
+            photos.map((file) => {
+                const buffer = Buffer.from(file.buffer);
+                const arrayBuffer = Uint8Array.from(buffer).buffer;
+                return uploadBytes(
+                    ref(storage, `/photos/${uuidv4()}`),
+                    arrayBuffer
+                );
+            })
+        );
+    }
+
+    private static async getPhotoUrls(photos: UploadResult[]) {
+        return await Promise.all(
+            photos.map((photo) => getDownloadURL(photo.ref))
+        );
+    }
+
     public static async create(
         req: Request,
         res: Response,
@@ -17,19 +49,8 @@ export class AlbumController {
             if (!req.body.title) {
                 return res.sendStatus(400);
             }
-            const photos = await Promise.all(
-                req.files.map((file) => {
-                    const buffer = Buffer.from(file.buffer);
-                    const arrayBuffer = Uint8Array.from(buffer).buffer;
-                    return uploadBytes(
-                        ref(storage, `/photos/${uuidv4()}`),
-                        arrayBuffer
-                    );
-                })
-            );
-            const photoUrls = await Promise.all(
-                photos.map((photo) => getDownloadURL(photo.ref))
-            );
+            const photos = await AlbumController.uploadPhotos(req.files);
+            const photoUrls = await AlbumController.getPhotoUrls(photos);
             await addDoc(collection(db, "albums"), {
                 photos: photos.map((_, i) => ({ url: photoUrls[i] })),
                 title: req.body.title,
@@ -42,14 +63,28 @@ export class AlbumController {
         }
     }
 
-    public static async addPhotos(
+    public static async updateAlbum(
         req: Request,
         res: Response,
         next: NextFunction
     ) {
-        const { id } = req.params;
-        console.log(id);
-        res.sendStatus(200);
+        try {
+            if (!Array.isArray(req.files)) {
+                throw new Error("Files must be an array.");
+            }
+            const data: any = {};
+            if (req.files) {
+                const uploaded = await AlbumController.uploadPhotos(req.files);
+                data.photos = await AlbumController.getPhotoUrls(uploaded);
+            }
+            if (req.params.id) {
+                data.title = req.body.title;
+            }
+            await updateDoc(doc(db, "albums", req.params.id), data);
+            res.sendStatus(200);
+        } catch (error) {
+            next(error);
+        }
     }
 
     public static async getRated(
