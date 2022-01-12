@@ -88,19 +88,19 @@ export class AlbumController {
         }
     }
 
-    public static async getRated(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) {
+    public static async get(req: Request, res: Response, next: NextFunction) {
         const q = query(
             collection(db, "albums"),
-            where("rated", "==", true),
             where("owner", "==", req.session.userId)
         );
         try {
             const albums = await getDocs(q);
-            res.json(albums.docs.map((doc) => doc.data()));
+            res.json(
+                albums.docs.map((doc) => ({
+                    ...doc.data(),
+                    id: doc.id,
+                }))
+            );
         } catch (error) {
             next(error);
         }

@@ -19,19 +19,27 @@ export function AuthContextProvider({ children }: AuthProps) {
     const [authenticated, setAuthenticated] = useState<Authenticated>(null);
 
     async function login(email: string, password: string) {
-        return await ApiService.fetch(
+        const response = await ApiService.fetch(
             "/auth/login",
             { method: "POST" },
             { email, password }
         );
+        if (response.ok) {
+            setAuthenticated(true);
+        }
+        return response;
     }
 
     async function register(email: string, password: string) {
-        return await ApiService.fetch(
+        const response = await ApiService.fetch(
             "/auth/register",
             { method: "POST" },
             { email, password }
         );
+        if (response.ok) {
+            setAuthenticated(true);
+        }
+        return response;
     }
 
     async function whoami() {

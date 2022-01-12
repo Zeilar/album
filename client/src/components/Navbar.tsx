@@ -6,6 +6,8 @@ export default function Navbar() {
         <Flex as="nav" mb="2rem">
             Navbar
             <NavLink to="/albums">My albums</NavLink>
+            <NavLink to="/login">Login</NavLink>
+            <NavLink to="/register">Register</NavLink>
         </Flex>
     );
 }

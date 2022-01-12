@@ -1,15 +1,12 @@
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import Router from "./Router";
 
 export default function App() {
     return (
-        <Flex
-            bgColor="gray.800"
-            minH="100vh"
-            color="whiteAlpha.900"
-            flexDir="column"
-        >
-            <Router />
-        </Flex>
+        <Box bgColor="gray.800" minH="100vh" color="whiteAlpha.900">
+            <Flex flexDir="column" maxW="60rem" mx="auto">
+                <Router />
+            </Flex>
+        </Box>
     );
 }

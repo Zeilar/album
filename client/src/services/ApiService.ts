@@ -23,7 +23,11 @@ export class ApiService {
             body: JSON.stringify(body),
         });
         try {
-            if (response.headers.get("content-type") === "application/json") {
+            if (
+                response.headers
+                    .get("content-type")
+                    ?.includes("application/json")
+            ) {
                 data = await response.json();
             }
         } catch (error) {
