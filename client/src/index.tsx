@@ -2,9 +2,10 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import { ChakraProvider } from "@chakra-ui/react";
 import { AuthContextProvider } from "./contexts/AuthContext";
+import { theme } from "./theme";
 
 ReactDOM.render(
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
         <AuthContextProvider>
             <App />
         </AuthContextProvider>
