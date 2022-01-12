@@ -9,9 +9,11 @@ import {
     useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import useAuth from "../hooks/useAuth";
 
 export default function Register() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [password, setPassword] = useState<string | null>(null);
@@ -34,6 +36,9 @@ export default function Register() {
             title: ok ? "Registration successful" : "Registration failed",
             status: ok ? "success" : "error",
         });
+        if (ok) {
+            navigate("/");
+        }
     }
 
     return (
