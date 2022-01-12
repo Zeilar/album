@@ -15,6 +15,9 @@ export default function Navbar() {
             fontWeight="semibold"
             flexWrap="wrap"
         >
+            <Link as={NavLink} to="/">
+                Home
+            </Link>
             {authenticated && (
                 <>
                     <Link as={NavLink} to="/albums">
