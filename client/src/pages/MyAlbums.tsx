@@ -51,7 +51,7 @@ export default function MyAlbums() {
 
     function renderAlbums(albums: Album[]) {
         return albums.map((album) => (
-            <Stack spacing={2} key={album.id}>
+            <Stack spacing={2} key={album.id} mb="1rem">
                 <Link
                     w="fit-content"
                     as={RouterLink}
