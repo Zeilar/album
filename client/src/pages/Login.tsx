@@ -42,7 +42,7 @@ export default function Login() {
     }
 
     return (
-        <Stack spacing={4} maxW="50rem" m="auto" as="form" onSubmit={submit}>
+        <Stack spacing={4} as="form" onSubmit={submit} w="100%">
             <Text fontSize="1.5rem">Login</Text>
             <FormControl isInvalid={emailError}>
                 <FormLabel htmlFor="email">Email</FormLabel>

@@ -42,7 +42,7 @@ export default function Register() {
     }
 
     return (
-        <Stack spacing={4} maxW="50rem" m="auto" as="form" onSubmit={submit}>
+        <Stack spacing={4} as="form" onSubmit={submit}>
             <Text fontSize="1.5rem">Register</Text>
             <FormControl isInvalid={emailError}>
                 <FormLabel htmlFor="email">Email</FormLabel>
