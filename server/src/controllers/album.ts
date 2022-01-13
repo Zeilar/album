@@ -129,7 +129,6 @@ export class AlbumController {
     ) {
         try {
             const { title, photos } = req.body;
-            console.log(title, photos);
             const { id } = await addDoc(collection(db, "albums"), {
                 owner: req.session.userId,
                 title,

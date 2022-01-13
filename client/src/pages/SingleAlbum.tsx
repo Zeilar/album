@@ -114,7 +114,7 @@ export default function SingleAlbum() {
             { title: album?.title, photos: selectedPhotos }
         );
         if (ok) {
-            navigate(`/album/${data?.id}`);
+            navigate(`/albums/${data?.id}`);
         } else {
             toast({
                 position: "top",
