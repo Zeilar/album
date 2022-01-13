@@ -105,8 +105,6 @@ export default function SingleAlbum() {
         }
     }
 
-    console.log(userId, album.owner);
-
     async function createFromSelection() {
         const { ok, data } = await ApiService.fetch<{ id: string }>(
             "/albums/selection",
