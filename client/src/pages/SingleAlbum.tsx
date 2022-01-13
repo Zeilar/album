@@ -1,6 +1,7 @@
 import {
     Box,
     Button,
+    Checkbox,
     Flex,
     Icon,
     Image,
@@ -92,6 +93,22 @@ export default function SingleAlbum() {
         }
     }
 
+    function toggleCheck(
+        e: React.ChangeEvent<HTMLInputElement>,
+        photo: string
+    ) {
+        const { checked } = e.target;
+        if (checked) {
+            setSelectedPhotos(p => [...p, photo]);
+        } else {
+            setSelectedPhotos(p => p.filter(p => p !== photo));
+        }
+    }
+
+    async function createFromSelection() {
+        // const {} = await ApiService.fetch(``)
+    }
+
     async function rateAlbum() {
         const { ok, data } = await ApiService.fetch<{ id: string }>(
             `/albums/${id}/rate`,
@@ -111,8 +128,6 @@ export default function SingleAlbum() {
             });
         }
     }
-
-    console.log(likedPhotos);
 
     return (
         <Stack spacing={4}>
@@ -138,16 +153,21 @@ export default function SingleAlbum() {
                             </ModalBody>
                         </ModalContent>
                     </Modal>
-                    {likedPhotos.length > 0 && (
+                    {selectedPhotos.length > 0 && (
                         <Button
-                            colorScheme="blue"
-                            onClick={rateAlbum}
+                            onClick={createFromSelection}
                             w="fit-content"
+                            colorScheme="blue"
                         >
-                            Finish rating album
+                            Create new album from selection
                         </Button>
                     )}
                 </>
+            )}
+            {likedPhotos.length > 0 && (
+                <Button colorScheme="blue" onClick={rateAlbum} w="fit-content">
+                    Finish rating album
+                </Button>
             )}
             {fullscreenPhoto && (
                 <Modal
@@ -170,7 +190,7 @@ export default function SingleAlbum() {
                 {album.photos.map((photo, i) => (
                     <Box h="fit-content" key={i} pos="relative">
                         <Image objectFit="cover" maxW="10rem" src={photo} />
-                        <Box bgColor="gray.900">
+                        <Flex bgColor="gray.900" alignItems="center">
                             <Button
                                 w="3rem"
                                 h="3rem"
@@ -195,7 +215,15 @@ export default function SingleAlbum() {
                             >
                                 <Icon as={MdiIcon} path={mdiFullscreen} />
                             </Button>
-                        </Box>
+                            {userId === album.owner && (
+                                <Checkbox
+                                    defaultChecked={selectedPhotos.includes(
+                                        photo
+                                    )}
+                                    onChange={e => toggleCheck(e, photo)}
+                                />
+                            )}
+                        </Flex>
                     </Box>
                 ))}
             </Flex>
