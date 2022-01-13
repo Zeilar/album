@@ -52,13 +52,13 @@ export class AlbumController {
             }
             const photos = await AlbumController.uploadPhotos(req.files);
             const photoUrls = await AlbumController.getPhotoUrls(photos);
-            const doc = await addDoc(collection(db, "albums"), {
+            const { id } = await addDoc(collection(db, "albums"), {
                 photos: photoUrls,
                 title: req.body.title,
                 rated: false,
                 owner: req.session.userId,
             });
-            res.json({ id: doc.id });
+            res.json({ id });
         } catch (error) {
             next(error);
         }
@@ -82,7 +82,7 @@ export class AlbumController {
                 data.title = req.body.title;
             }
             await updateDoc(doc(db, "albums", req.params.id), data);
-            res.sendStatus(200);
+            res.json(data);
         } catch (error) {
             next(error);
         }
@@ -111,7 +111,11 @@ export class AlbumController {
         res: Response,
         next: NextFunction
     ) {
-        //
+        const album = await getDoc(doc(db, "albums", req.params.id));
+        if (!album.exists()) {
+            return res.sendStatus(404);
+        }
+        res.json(album.data());
     }
 
     public static async rateAlbum(
@@ -125,13 +129,13 @@ export class AlbumController {
                 return res.sendStatus(404);
             }
             const data = album.data();
-            await addDoc(collection(db, "albums"), {
+            const { id } = await addDoc(collection(db, "albums"), {
                 owner: data.owner,
                 title: data.title,
                 photos: req.body.photos,
                 rated: true,
             });
-            res.sendStatus(200);
+            res.json({ id });
         } catch (error) {
             next(error);
         }

@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import MyAlbums from "./pages/MyAlbums";
 import Register from "./pages/Register";
+import SingleAlbum from "./pages/SingleAlbum";
 
 export default function Router() {
     return (
@@ -17,6 +18,7 @@ export default function Router() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/albums" element={<MyAlbums />} />
                 <Route path="/albums/new" element={<CreateAlbum />} />
+                <Route path="/albums/:id" element={<SingleAlbum />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </>

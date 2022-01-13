@@ -61,8 +61,9 @@ export class AuthController {
                 email,
                 password
             );
-            req.session.userId = user.uid;
-            res.sendStatus(200);
+            const { uid } = user;
+            req.session.userId = uid;
+            res.json({ id: uid });
         } catch (error) {
             res.sendStatus(401);
         }

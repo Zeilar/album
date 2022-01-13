@@ -7,6 +7,7 @@ type Authenticated = boolean | null;
 
 interface IAuthContext {
     authenticated: Authenticated;
+    userId: string | null;
     login(email: string, password: string): Promise<Response<any>>;
     register(email: string, password: string): Promise<Response<any>>;
     logout(): Promise<Response<void>>;
@@ -20,6 +21,7 @@ export const AuthContext = createContext({} as IAuthContext);
 
 export function AuthContextProvider({ children }: AuthProps) {
     const [authenticated, setAuthenticated] = useState<Authenticated>(null);
+    const [userId, setUserId] = useState<string | null>(null);
     const navigate = useNavigate();
     const toast = useToast();
 
@@ -38,32 +40,39 @@ export function AuthContextProvider({ children }: AuthProps) {
     }
 
     async function login(email: string, password: string) {
-        const response = await ApiService.fetch(
+        const response = await ApiService.fetch<{ uid: string }>(
             "/auth/login",
             { method: "POST" },
             { email, password }
         );
         if (response.ok) {
             setAuthenticated(true);
+            setUserId(response.data?.uid as string);
         }
         return response;
     }
 
     async function register(email: string, password: string) {
-        const response = await ApiService.fetch(
+        const response = await ApiService.fetch<{ uid: string }>(
             "/auth/register",
             { method: "POST" },
             { email, password }
         );
         if (response.ok) {
             setAuthenticated(true);
+            setUserId(response.data?.uid as string);
         }
         return response;
     }
 
     async function whoami() {
-        const { status } = await ApiService.fetch("/auth/whoami");
-        setAuthenticated(status === 200);
+        const { ok, data } = await ApiService.fetch<{ uid: string }>(
+            "/auth/whoami"
+        );
+        setAuthenticated(ok);
+        if (ok) {
+            setUserId(data?.uid as string);
+        }
     }
 
     useEffect(() => {
@@ -72,6 +81,7 @@ export function AuthContextProvider({ children }: AuthProps) {
 
     const values: IAuthContext = {
         authenticated,
+        userId,
         login,
         register,
         logout,
