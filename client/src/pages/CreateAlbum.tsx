@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { CSSProperties, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useNavigate } from "react-router";
 import { ApiService } from "../services/ApiService";
 
 const style: CSSProperties = {
@@ -24,10 +25,12 @@ const style: CSSProperties = {
 };
 
 export default function CreateAlbum() {
+    const [submitting, setSubmitting] = useState(false);
     const [title, setTitle] = useState<null | string>(null);
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         accept: "image/*",
     });
+    const navigate = useNavigate();
 
     async function upload() {
         const formData = new FormData();
@@ -35,11 +38,17 @@ export default function CreateAlbum() {
         acceptedFiles.forEach(file => {
             formData.append("photos", file);
         });
-        await fetch(`${ApiService.BASE_URL}/albums`, {
+        setSubmitting(true);
+        const response = await fetch(`${ApiService.BASE_URL}/albums`, {
             method: "POST",
             body: formData,
             credentials: "include",
         });
+        setSubmitting(false);
+        if (response.ok) {
+            const data = await response.json();
+            navigate(`/albums/${data.id}`);
+        }
     }
 
     const titleError = title === "";
@@ -66,6 +75,7 @@ export default function CreateAlbum() {
                 )}
             </Box>
             <Button
+                isLoading={submitting}
                 colorScheme="blue"
                 onClick={upload}
                 disabled={acceptedFiles.length === 0}

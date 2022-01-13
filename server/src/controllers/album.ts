@@ -52,13 +52,13 @@ export class AlbumController {
             }
             const photos = await AlbumController.uploadPhotos(req.files);
             const photoUrls = await AlbumController.getPhotoUrls(photos);
-            await addDoc(collection(db, "albums"), {
+            const doc = await addDoc(collection(db, "albums"), {
                 photos: photoUrls,
                 title: req.body.title,
                 rated: false,
                 owner: req.session.userId,
             });
-            res.sendStatus(200);
+            res.json({ id: doc.id });
         } catch (error) {
             next(error);
         }
