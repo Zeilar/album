@@ -105,8 +105,23 @@ export default function SingleAlbum() {
         }
     }
 
+    console.log(userId, album.owner);
+
     async function createFromSelection() {
-        // const {} = await ApiService.fetch(``)
+        const { ok, data } = await ApiService.fetch<{ id: string }>(
+            "/albums/selection",
+            { method: "POST" },
+            { title: album?.title, photos: selectedPhotos }
+        );
+        if (ok) {
+            navigate(`/album/${data?.id}`);
+        } else {
+            toast({
+                position: "top",
+                status: "error",
+                title: "Failed creating album",
+            });
+        }
     }
 
     async function rateAlbum() {

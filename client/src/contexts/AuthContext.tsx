@@ -40,38 +40,38 @@ export function AuthContextProvider({ children }: AuthProps) {
     }
 
     async function login(email: string, password: string) {
-        const response = await ApiService.fetch<{ uid: string }>(
+        const response = await ApiService.fetch<{ id: string }>(
             "/auth/login",
             { method: "POST" },
             { email, password }
         );
         if (response.ok) {
             setAuthenticated(true);
-            setUserId(response.data?.uid as string);
+            setUserId(response.data?.id as string);
         }
         return response;
     }
 
     async function register(email: string, password: string) {
-        const response = await ApiService.fetch<{ uid: string }>(
+        const response = await ApiService.fetch<{ id: string }>(
             "/auth/register",
             { method: "POST" },
             { email, password }
         );
         if (response.ok) {
             setAuthenticated(true);
-            setUserId(response.data?.uid as string);
+            setUserId(response.data?.id as string);
         }
         return response;
     }
 
     async function whoami() {
-        const { ok, data } = await ApiService.fetch<{ uid: string }>(
+        const { ok, data } = await ApiService.fetch<{ id: string }>(
             "/auth/whoami"
         );
         setAuthenticated(ok);
         if (ok) {
-            setUserId(data?.uid as string);
+            setUserId(data?.id as string);
         }
     }
 

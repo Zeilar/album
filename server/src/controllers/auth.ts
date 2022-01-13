@@ -18,7 +18,7 @@ export class AuthController {
         );
         try {
             const users = await getDocs(q);
-            res.json(users.docs[0].data());
+            res.json({ id: users.docs[0].data().uid });
         } catch (error) {
             next(error);
         }
@@ -39,12 +39,13 @@ export class AuthController {
                 email,
                 password
             );
-            req.session.userId = user.uid;
+            const { uid } = user;
+            req.session.userId = uid;
             await addDoc(collection(db, "users"), {
                 uid: user.uid,
                 email: user.email,
             });
-            res.sendStatus(200);
+            res.json({ id: uid });
         } catch (error) {
             next(error);
         }

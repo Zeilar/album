@@ -111,11 +111,35 @@ export class AlbumController {
         res: Response,
         next: NextFunction
     ) {
-        const album = await getDoc(doc(db, "albums", req.params.id));
-        if (!album.exists()) {
-            return res.sendStatus(404);
+        try {
+            const album = await getDoc(doc(db, "albums", req.params.id));
+            if (!album.exists()) {
+                return res.sendStatus(404);
+            }
+            res.json(album.data());
+        } catch (error) {
+            next(error);
         }
-        res.json(album.data());
+    }
+
+    public static async createFromSelection(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const { title, photos } = req.body;
+            console.log(title, photos);
+            const { id } = await addDoc(collection(db, "albums"), {
+                owner: req.session.userId,
+                title,
+                photos,
+                rated: false,
+            });
+            res.json({ id });
+        } catch (error) {
+            next(error);
+        }
     }
 
     public static async rateAlbum(

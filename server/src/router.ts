@@ -30,3 +30,8 @@ router.put(
     AlbumController.updateAlbum
 );
 router.post("/albums/:id/rate", AlbumController.rateAlbum);
+router.post(
+    "/albums/selection",
+    authenticated,
+    AlbumController.createFromSelection
+);
