@@ -1,6 +1,8 @@
 import {
+    Box,
     Button,
     Flex,
+    Icon,
     Image,
     Modal,
     ModalBody,
@@ -20,6 +22,8 @@ import { Album } from "../@types/album";
 import UploadZone from "../components/UploadZone";
 import useAuth from "../hooks/useAuth";
 import { ApiService } from "../services/ApiService";
+import MdiIcon from "@mdi/react";
+import { mdiFullscreen } from "@mdi/js";
 
 export default function SingleAlbum() {
     const { id } = useParams<{ id: string }>();
@@ -27,7 +31,11 @@ export default function SingleAlbum() {
     const [album, setAlbum] = useState<Album>();
     const { authenticated, userId } = useAuth();
     const editModal = useDisclosure();
+    const fullscreenModal = useDisclosure();
     const toast = useToast();
+    const [likedPhotos, setLikedPhotos] = useState<string[]>([]);
+    const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
+    const [fullscreenPhoto, setFullscreenPhoto] = useState<string | null>(null);
 
     useEffect(() => {
         if (!id) {
@@ -101,12 +109,46 @@ export default function SingleAlbum() {
                     </Modal>
                 </>
             )}
+            {fullscreenPhoto && (
+                <Modal
+                    isOpen={fullscreenModal.isOpen}
+                    onClose={fullscreenModal.onClose}
+                >
+                    <ModalOverlay />
+                    <ModalContent>
+                        <ModalBody>
+                            <Image src={fullscreenPhoto} />
+                        </ModalBody>
+                    </ModalContent>
+                </Modal>
+            )}
             <Text fontSize="2rem" fontWeight="bold">
                 {album.title}
             </Text>
             <Flex flexWrap="wrap" gridGap="0.5rem">
                 {album.photos.map((photo, i) => (
-                    <Image objectFit="cover" maxW="10rem" src={photo} key={i} />
+                    <Box h="fit-content" key={i} pos="relative">
+                        <Image objectFit="cover" maxW="10rem" src={photo} />
+                        <Box bgColor="gray.900">
+                            <Button w="3rem" h="3rem" variant="unstyled">
+                                👍
+                            </Button>
+                            <Button w="3rem" h="3rem" variant="unstyled">
+                                👎
+                            </Button>
+                            <Button
+                                w="3rem"
+                                h="3rem"
+                                variant="unstyled"
+                                onClick={() => {
+                                    setFullscreenPhoto(photo);
+                                    fullscreenModal.onOpen();
+                                }}
+                            >
+                                <Icon as={MdiIcon} path={mdiFullscreen} />
+                            </Button>
+                        </Box>
+                    </Box>
                 ))}
             </Flex>
         </Stack>
