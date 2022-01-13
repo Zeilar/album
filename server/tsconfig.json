@@ -12,6 +12,7 @@
         "outDir": "./dist",
         "incremental": true,
         "jsx": "preserve",
-        "esModuleInterop": true
-    },
+        "esModuleInterop": true,
+        "declarationMap": false
+    }
 }

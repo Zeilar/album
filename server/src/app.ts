@@ -8,7 +8,8 @@ import cors from "cors";
 
 const PORT = env.get("PORT");
 const dev = env.get("NODE_ENV") === "development";
-const clientPath = join(__dirname, `../../client/${dev ? "public" : "build"}`);
+const clientPath = join(__dirname, "../../../client/build");
+
 export const app = express();
 
 app.use(
