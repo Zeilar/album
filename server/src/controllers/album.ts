@@ -131,7 +131,7 @@ export class AlbumController {
             const data = album.data();
             const { id } = await addDoc(collection(db, "albums"), {
                 owner: data.owner,
-                title: data.title,
+                title: `${data.title} - Rated`,
                 photos: req.body.photos,
                 rated: true,
             });

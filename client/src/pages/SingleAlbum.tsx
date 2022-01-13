@@ -17,7 +17,7 @@ import {
     useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Album } from "../@types/album";
 import UploadZone from "../components/UploadZone";
 import useAuth from "../hooks/useAuth";
@@ -34,6 +34,7 @@ export default function SingleAlbum() {
     const fullscreenModal = useDisclosure();
     const toast = useToast();
     const [likedPhotos, setLikedPhotos] = useState<string[]>([]);
+    const navigate = useNavigate();
     const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
     const [fullscreenPhoto, setFullscreenPhoto] = useState<string | null>(null);
 
@@ -83,6 +84,36 @@ export default function SingleAlbum() {
         }
     }
 
+    function toggleLike(photo: string) {
+        if (likedPhotos.includes(photo)) {
+            setLikedPhotos(p => p.filter(p => p !== photo));
+        } else {
+            setLikedPhotos(p => [...p, photo]);
+        }
+    }
+
+    async function rateAlbum() {
+        const { ok, data } = await ApiService.fetch<{ id: string }>(
+            `/albums/${id}/rate`,
+            { method: "POST" },
+            {
+                title: album?.title,
+                photos: likedPhotos,
+            }
+        );
+        if (ok) {
+            navigate(`/albums/${data?.id}`);
+        } else {
+            toast({
+                position: "top",
+                status: "error",
+                title: "Failed rating album",
+            });
+        }
+    }
+
+    console.log(likedPhotos);
+
     return (
         <Stack spacing={4}>
             {authenticated && album.owner === userId && (
@@ -107,6 +138,15 @@ export default function SingleAlbum() {
                             </ModalBody>
                         </ModalContent>
                     </Modal>
+                    {likedPhotos.length > 0 && (
+                        <Button
+                            colorScheme="blue"
+                            onClick={rateAlbum}
+                            w="fit-content"
+                        >
+                            Finish rating album
+                        </Button>
+                    )}
                 </>
             )}
             {fullscreenPhoto && (
@@ -116,6 +156,7 @@ export default function SingleAlbum() {
                 >
                     <ModalOverlay />
                     <ModalContent>
+                        <ModalCloseButton />
                         <ModalBody>
                             <Image src={fullscreenPhoto} />
                         </ModalBody>
@@ -130,11 +171,18 @@ export default function SingleAlbum() {
                     <Box h="fit-content" key={i} pos="relative">
                         <Image objectFit="cover" maxW="10rem" src={photo} />
                         <Box bgColor="gray.900">
-                            <Button w="3rem" h="3rem" variant="unstyled">
+                            <Button
+                                w="3rem"
+                                h="3rem"
+                                variant="unstyled"
+                                onClick={() => toggleLike(photo)}
+                                bgColor={
+                                    likedPhotos.includes(photo)
+                                        ? "gold"
+                                        : undefined
+                                }
+                            >
                                 👍
-                            </Button>
-                            <Button w="3rem" h="3rem" variant="unstyled">
-                                👎
                             </Button>
                             <Button
                                 w="3rem"
