@@ -7,14 +7,13 @@ import { join } from "path";
 import cors from "cors";
 
 const PORT = env.get("PORT");
-const dev = env.get("NODE_ENV") === "development";
 const clientPath = join(__dirname, "../../../client/build");
 
 export const app = express();
 
 app.use(
     cors({
-        origin: dev ? "http://localhost:3000" : `http://localhost:${PORT}`,
+        origin: `http://localhost:${PORT}`,
         credentials: true,
     })
 );
