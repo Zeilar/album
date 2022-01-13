@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import NotFound from "./pages/404";
+import CreateAlbum from "./pages/CreateAlbum";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import MyAlbums from "./pages/MyAlbums";
@@ -15,6 +16,7 @@ export default function Router() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/albums" element={<MyAlbums />} />
+                <Route path="/albums/new" element={<CreateAlbum />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </>

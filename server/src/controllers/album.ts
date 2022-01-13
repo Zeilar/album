@@ -21,7 +21,7 @@ import { v4 as uuidv4 } from "uuid";
 export class AlbumController {
     private static async uploadPhotos(photos: Express.Multer.File[]) {
         return await Promise.all(
-            photos.map((file) => {
+            photos.map(file => {
                 const buffer = Buffer.from(file.buffer);
                 const arrayBuffer = Uint8Array.from(buffer).buffer;
                 return uploadBytes(
@@ -34,7 +34,7 @@ export class AlbumController {
 
     private static async getPhotoUrls(photos: UploadResult[]) {
         return await Promise.all(
-            photos.map((photo) => getDownloadURL(photo.ref))
+            photos.map(photo => getDownloadURL(photo.ref))
         );
     }
 
@@ -53,7 +53,7 @@ export class AlbumController {
             const photos = await AlbumController.uploadPhotos(req.files);
             const photoUrls = await AlbumController.getPhotoUrls(photos);
             await addDoc(collection(db, "albums"), {
-                photos: photos.map((_, i) => ({ url: photoUrls[i] })),
+                photos: photoUrls,
                 title: req.body.title,
                 rated: false,
                 owner: req.session.userId,
@@ -96,7 +96,7 @@ export class AlbumController {
         try {
             const albums = await getDocs(q);
             res.json(
-                albums.docs.map((doc) => ({
+                albums.docs.map(doc => ({
                     ...doc.data(),
                     id: doc.id,
                 }))

@@ -1,5 +1,3 @@
-const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
 export interface Response<T> {
     data: T | null;
     ok: boolean;
@@ -7,17 +5,19 @@ export interface Response<T> {
 }
 
 export class ApiService {
+    public static BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
     public static async fetch<T>(
         input: RequestInfo,
         init?: RequestInit | undefined,
-        body?: any
+        body?: FormData | any
     ): Promise<Response<T>> {
         let data: T | null = null;
-        const response = await fetch(`${BASE_URL}${input}`, {
+        const response = await fetch(`${ApiService.BASE_URL}${input}`, {
             ...init,
             headers: {
-                ...init?.headers,
                 "Content-Type": "application/json",
+                ...init?.headers,
             },
             credentials: "include",
             body: JSON.stringify(body),

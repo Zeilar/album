@@ -21,6 +21,7 @@ import { ApiService } from "../services/ApiService";
 
 export default function MyAlbums() {
     const { authenticated } = useAuth();
+    const [loading, setLoading] = useState(true);
     const [albums, setAlbums] = useState<Album[]>([]);
     const toast = useToast();
 
@@ -29,15 +30,17 @@ export default function MyAlbums() {
             return;
         }
         (async () => {
+            setLoading(true);
             const albumsQuery = await ApiService.fetch<Album[]>("/albums");
             if (albumsQuery.ok && albumsQuery.data) {
                 setAlbums(albumsQuery.data);
             }
+            setLoading(false);
         })();
     }, [authenticated]);
 
-    if (authenticated === null) {
-        return <Spinner mx="auto" color="blue" />;
+    if (authenticated === null || loading) {
+        return <Spinner mx="auto" />;
     }
 
     if (authenticated === false) {

@@ -23,6 +23,9 @@ export default function Navbar() {
                     <Link as={NavLink} to="/albums">
                         My albums
                     </Link>
+                    <Link as={NavLink} to="/albums/new">
+                        Create album
+                    </Link>
                     <Link ml="auto" onClick={logout}>
                         Logout
                     </Link>
