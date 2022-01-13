@@ -13,7 +13,7 @@ export const app = express();
 
 app.use(
     cors({
-        origin: `http://localhost:${PORT}`,
+        origin: "https://albums.angelin.dev",
         credentials: true,
     })
 );
